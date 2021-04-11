@@ -33,6 +33,14 @@ doc2vec --speed deep-learn --workers 128
 
 To replicate out analysis, follow [`examples/notebooks`](examples/) in consecutive order
 
+## Topic reduction
+
+Interactive `streamlit` app could be found [here](https://github.com/hcss-utils/streamlit-topic-reduction)
+
+![alt text](https://raw.githubusercontent.com/hcss-utils/streamlit-topic-reduction/main/data/example_topic-numbers.png)
+
+---
+
 ## Project Organization
 ```console
     ├── README.md          <- The top-level README for developers using this project.
