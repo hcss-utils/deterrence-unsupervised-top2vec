@@ -1,0 +1,51 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+
+# exclude data from source control by default
+/data/raw
+
+# models
+/models/
+
+# Jupyter NB Checkpoints
+.ipynb_checkpoints/
+
+# Distribution / packaging
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Sphinx documentation
+docs/_build/
+
+# DotEnv configuration
+.env
+
+# Database
+*.db
+*.rdb
+
+# Jupyter NB Checkpoints
+.ipynb_checkpoints/
+
+# vim
+*.swp
+*.swo
+
+# Mypy cache
+.mypy_cache/
+site/
