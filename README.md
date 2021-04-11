@@ -25,7 +25,10 @@ $ python examples/train.py --help
 
 The model that we're using for the paper was trained as follows:
 ```console
-$ python examples/train.py data/raw/210119_en_deter_preprocessed.json models/pq-model doc2vec --speed deep-learn --workers 128
+$ python examples/train.py \
+data/raw/210119_en_deter_preprocessed.json \
+models/pq-model \
+doc2vec --speed deep-learn --workers 128
 ```
 
 To replicate out analysis, follow [`examples/notebooks`](examples/) in consecutive order
