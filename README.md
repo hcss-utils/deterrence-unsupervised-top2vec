@@ -6,6 +6,7 @@ ProQuest Deterrence dataset containing 26,525 non-empty documents.
 
 ## Usage
 
+### Cloning & venv
 To use or contribute to this repository, first checkout the code. 
 Then create a new virtual environment:
 
@@ -16,6 +17,11 @@ $ python3 -m venv env
 $ . env/bin/activate
 $ pip install -r requirements.txt
 ```
+
+### Accessing data
+Create an issue if you need access to raw data (exceeding 100mb in size thus can't be hosted here).  
+
+### Model training
 
 To train the model, run [`train.py`](examples/train.py): 
 
@@ -31,9 +37,16 @@ models/pq-model --embedding-model \
 doc2vec --training-speed deep-learn --workers 128
 ```
 
-To replicate out analysis, follow [`examples/notebooks`](examples/) in consecutive order
+Alternatively, use:
+```console
+$ make train
+```
 
-## Topic reduction
+### Analysis
+
+To replicate out analysis, follow [`examples/notebooks`](examples/) in consecutive order. 
+
+#### Topic reduction
 
 Interactive `streamlit` app could be found [here](https://github.com/hcss-utils/streamlit-topic-reduction)
 

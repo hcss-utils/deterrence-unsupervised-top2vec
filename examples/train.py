@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import json
 import typer
 from enum import Enum
@@ -49,7 +50,7 @@ def train(
 ):
     """Train Top2Vec algorithm."""
     typer.echo("Loading data...")
-    with open(load, "r", encoding="utf-8") as f:
+    with load.open("r", encoding="utf-8") as f:
         data = json.load(f)
 
     docs = [
