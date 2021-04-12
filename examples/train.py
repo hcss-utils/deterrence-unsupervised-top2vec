@@ -6,13 +6,6 @@ from top2vec import Top2Vec
 app = typer.Typer(name="train", add_completion=False, help="This is a training script.")
 
 
-def check_file_exists(path):
-    if not path.exists():
-        typer.echo(f"The path you've supplied {path} does not exist.")
-        raise typer.Exit(code=1)
-    return path
-
-
 def check_parent_exists(path):
     if not path.parent.exists():
         typer.echo(f"The path you've supplied {path} does not exist.")
@@ -52,7 +45,7 @@ def train(
     data: Path = typer.Argument(
         ...,
         help="JSON file containing documents for training.",
-        callback=check_file_exists,
+        exists=True
     ),
     model: Path = typer.Argument(
         ..., help="Output path for model.", callback=check_parent_exists
@@ -70,7 +63,7 @@ def train(
     ),
     preprocess_data: bool = typer.Option(True, is_flag=True, help="Remove empty docs."),
 ):
-    """Say hello"""
+    """Train Top2Vec algorithm."""
     typer.echo("Loading data...")
     with open(data, "r", encoding="utf-8") as f:
         data = json.load(f)
