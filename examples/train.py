@@ -43,12 +43,12 @@ def load_json(load):
 def load_csv(load):
     data = pd.read_csv(load, converters={"np": eval})
     noun_phrases = data.loc[:, "np"].tolist()
-    return [" ".join(w.lower() for w in l) for l in noun_phrases]
+    return [",".join(w.lower() for w in l) for l in noun_phrases]
 
 
 def tokenize(doc):
     """To overwrite 'default_tokenizer'."""
-    return doc
+    return doc.split(",")
 
 
 @app.command()
@@ -69,6 +69,9 @@ def train(
     workers: int = typer.Option(
         128, help="The amount of worker threads to be used in training the model"
     ),
+    min_count: int = typer.Option(
+        50, help="Ignores all words with total frequency lower than this"
+    ),
     noun_phrases: bool = typer.Option(True, help="Use noun-phrases for training."),
 ):
     """Train Top2Vec algorithm."""
@@ -87,10 +90,16 @@ def train(
             speed=speed,
             workers=workers,
             tokenizer=tokenizer,
+            min_count=min_count,
         )
     else:
         typer.echo(f"Training the model with following parameters: {model=}")
-        t2v = Top2Vec(documents=docs, embedding_model=model, tokenizer=tokenizer)
+        t2v = Top2Vec(
+            documents=docs,
+            embedding_model=model,
+            tokenizer=tokenizer,
+            min_count=min_count,
+        )
     typer.echo(f"Saving the model to {save}")
     t2v.save(save)
 
