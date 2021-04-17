@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import json
 import typer
+import pandas as pd
 from enum import Enum
 from pathlib import Path
 from top2vec import Top2Vec
@@ -29,6 +30,27 @@ def check_parent_exists(path):
     return path
 
 
+def load_json(load):
+    with load.open("r", encoding="utf-8") as f:
+        data = json.load(f)
+    return [
+        doc.get("fulltext", "")
+        for doc in data
+        if not doc.get("fulltext", "").startswith("Not available.")
+    ]
+
+
+def load_csv(load):
+    data = pd.read_csv(load, converters={"np": eval})
+    noun_phrases = data.loc[:, "np"].tolist()
+    return [" ".join(w.lower() for w in l) for l in noun_phrases]
+
+
+def tokenize(doc):
+    """To overwrite 'default_tokenizer'."""
+    return doc
+
+
 @app.command()
 def train(
     load: Path = typer.Argument(
@@ -47,20 +69,14 @@ def train(
     workers: int = typer.Option(
         128, help="The amount of worker threads to be used in training the model"
     ),
+    noun_phrases: bool = typer.Option(True, help="Use noun-phrases for training."),
 ):
     """Train Top2Vec algorithm."""
     typer.echo("Loading data...")
-    with load.open("r", encoding="utf-8") as f:
-        data = json.load(f)
-
-    docs = [
-        doc.get("fulltext", "")
-        for doc in data
-        if not doc.get("fulltext", "").startswith("Not available.")
-    ]
-
+    docs = load_json(load) if load.suffix == ".json" else load_csv(load)
     speed = training_speed.value
     model = embedding_model.value
+    tokenizer = tokenize if noun_phrases else None
     if model == "doc2vec":
         typer.echo(
             f"Training the model with following parameters: {model=}, {speed=}, {workers=}"
@@ -70,10 +86,11 @@ def train(
             embedding_model=model,
             speed=speed,
             workers=workers,
+            tokenizer=tokenizer,
         )
     else:
         typer.echo(f"Training the model with following parameters: {model=}")
-        t2v = Top2Vec(documents=docs, embedding_model=model)
+        t2v = Top2Vec(documents=docs, embedding_model=model, tokenizer=tokenizer)
     typer.echo(f"Saving the model to {save}")
     t2v.save(save)
 
