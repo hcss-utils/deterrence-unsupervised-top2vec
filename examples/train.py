@@ -40,9 +40,12 @@ def load_json(load):
     ]
 
 
-def load_csv(load):
-    data = pd.read_csv(load, converters={"np": eval})
-    noun_phrases = data.loc[:, "np"].tolist()
+def load_csv(load, noun_phrases):
+    col = "np" if noun_phrases else "fulltext"
+    if not noun_phrases:
+        return pd.read_csv(load)[col].tolist()
+    data = pd.read_csv(load, converters={col: eval})
+    noun_phrases = data.loc[:, col].tolist()
     return [",".join(w.lower() for w in l) for l in noun_phrases]
 
 
@@ -76,13 +79,14 @@ def train(
 ):
     """Train Top2Vec algorithm."""
     typer.echo("Loading data...")
-    docs = load_json(load) if load.suffix == ".json" else load_csv(load)
+    docs = load_json(load) if load.suffix == ".json" else load_csv(load, noun_phrases)
+    typer.echo(f"Loaded {len(docs)} documents")
     speed = training_speed.value
     model = embedding_model.value
     tokenizer = tokenize if noun_phrases else None
     if model == "doc2vec":
         typer.echo(
-            f"Training the model with following parameters: {model=}, {speed=}, {workers=}"
+            f"Training the model with following parameters: {model=}, {speed=}, {workers=}, {min_count=}, {noun_phrases=}"
         )
         t2v = Top2Vec(
             documents=docs,
@@ -93,7 +97,9 @@ def train(
             min_count=min_count,
         )
     else:
-        typer.echo(f"Training the model with following parameters: {model=}")
+        typer.echo(
+            f"Training the model with following parameters{model=}, {noun_phrases=}"
+        )
         t2v = Top2Vec(
             documents=docs,
             embedding_model=model,
