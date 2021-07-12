@@ -1,4 +1,4 @@
 typer==0.3.2
-top2vec==1.0.24
+top2vec==1.0.26
 umap-learn==0.5.1
 matplotlib==3.4.2
